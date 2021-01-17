@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title> find movies</title>
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+<style>
+	* {
+		box-shadow: border-box;
+	}
+	.conten{
+		width:80%;
+		margin: auto;
+		background-color: green;
+		height: 500px;
+		margin-top: 120px;
+		padding: 40px;
+		box-shadow: 3px 6px 6px #7CFC00;
+	}
+	
+	input{
+		background-color: black;
+		color: white;
+		font-size: 20px;
+		height: 35px;
+		width: 80%;
+		margin-left: 20px;
+		border-radius: 20px;
+		font-family:Arial, FontAwesome;
+		padding-left:20px; 
+		
+	}
+	.h31{
+		font-family: segoe print; 
+		margin-left: 20px; 
+		border: 4px solid white; 
+		border-radius: 45%; 
+		width: 110px; 
+		text-align: center;
+	}
+	.h32{
+		font-weight: bold; 
+		text-align: center; 
+	}
+	
+</style>
+</head>
+<body style="background-color: gray">
+	<div class="conten">
+		<h3 class="h31">SHOPIFY</h3>
+		<input type="text" id="see" placeholder="&#xF002; Search movies">
+		
+		<div style="display: flex; flex-direction: row; align-items: stretch; margin-top: 30px; margin-left: 20px">
+
+			<div style="background-color: white; margin-left: 30px; padding: 10px; border-radius: 10px;" >
+				<h3 class="h32">RESULTS <span id="re"></span></h3> 
+				<div id="result"></div>
+
+			</div>
+			<div style="background-color: white; margin-left: 30px; padding: 10px; border-radius: 10px;" id="nomi">
+				<h3  class="h32">NOMINATION LIST</h3>
+				<table id="nomtable"><tbody id="tbody"></tbody></table>
+			</div>
+		</div>
+	</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript">
+	$(document).ready (function() {
+		$("#see").keyup(function(event){
+			event.preventDefault()
+			var film = $("#see").val();
+			var result="";
+			var url = "http://www.omdbapi.com/?i=tt3896198&apikey=1c931e8c";
+			var reshow = document.getElementById("see").value;
+			document.getElementById("re").innerHTML=  "for \"" + reshow + "\"" ;
+			
+
+			$.ajax({
+				method:'GET',
+				url:url+"&t="+film,
+				success:function(data){
+					console.log(data);
+					 result += `
+						<table >
+							<tr>
+								<td id="td1">${data.Title} </td>
+								<td id="td2">${data.Released} </td>
+								<td><button type="submit" value="Nominate" onclick=nominate() id="d"> Nominate</button></td>
+							</tr>
+						</table
+					`
+					 $("#result").html(result)
+				}
+			})
+
+		})
+	})
+	var arrayx = [];
+	var count=0;
+	function nominate(){
+		if (count<5) {
+		
+		var x1 = document.getElementById("td1").innerHTML;
+		var x2 = document.getElementById("td2").innerHTML;
+
+		if (arrayx.indexOf(x1)<0) {
+		arrayx.push(x1);
+
+			var ff = "<tr>";
+			ff += "<td>"+ x1 +"</td>";
+			ff += "<td>"+ x2 +"</td>";
+			ff += "<td><button type='button' onclick='deleteRow(this)'>Remove</button></td>";
+			ff+="</tr>";
+			
+		document.getElementById("tbody").insertRow().innerHTML=ff; 
+		document.getElementById("d").disabled=true;
+		count++;
+
+		} else { document.getElementById("d").disabled=true;}
+
+		}
+		else { alert("You can nominate only 5. Thanks");}
+
+
+      }
+      function deleteRow(del) {
+      	var y = document.getElementById("td1").innerHTML;
+  		var x = del.parentNode.parentNode.rowIndex;
+ 		 document.getElementById("nomtable").deleteRow(x);
+ 		 if (arrayx.indexOf(y)>=0) {
+ 		 arrayx.splice(arrayx.indexOf(y), 1 );}
+ 		 count--;
+		}
+</script>
+</body>
+</html>
